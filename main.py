@@ -34,7 +34,7 @@ def get_frequency_dict_from_text(sentence):
         val = tmp_dict.get(text, 0)
         tmp_dict[text] = val + 1
     for key in tmp_dict:
-        full_terms_dict.add(key, math.ceil(10 * math.log(10 + tmp_dict[key])))
+        full_terms_dict.add(key, math.ceil(10 * math.log(1 + tmp_dict[key])))
     return full_terms_dict
 
 
@@ -56,14 +56,15 @@ def make_image(width, height, text, bg_color, max_words, mask, image_show, image
                    max_words=max_words,
                    colormap='tab20c',
                    background_color=bg_color,
+                   max_font_size=300,
                    mask=mask,
-                   collocations=True
+                   relative_scaling=1.0
                    )
     # generate word cloud
     wc.generate_from_frequencies(text)
 
     # show
-    if image_show is not None:
+    if image_show is True:
         plt.imshow(wc, interpolation="bilinear")
         plt.axis("off")
         plt.show()
@@ -85,8 +86,9 @@ def main():
     # mask = get_mask_from_image(image_mask_path)
     # mask = get_circle_mask()
 
-    for i in range(10):
-        make_image(2000, 2000, full_terms_dict, "black", 200, None, None, "saved/test"+str(i)+".png")
+    # for i in range(10):
+    #     make_image(2000, 2000, full_terms_dict, "black", 200, None, None, "saved/"+str(i)+".png")
+    make_image(2000, 2000, full_terms_dict, "black", 200, None, True, None)
 
 
 if __name__ == '__main__':
