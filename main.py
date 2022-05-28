@@ -50,19 +50,27 @@ def get_circle_mask():
     return mask
 
 
-def make_image(text, bg_color, max_words, mask, image_save):
-    wc = WordCloud(background_color=bg_color, max_words=max_words, mask=mask, relative_scaling=0)
+def make_image(width, height, text, bg_color, max_words, mask, image_show, image_save):
+    wc = WordCloud(width=width,
+                   height=height,
+                   max_words=max_words,
+                   colormap='tab20c',
+                   background_color=bg_color,
+                   mask=mask,
+                   collocations=True
+                   )
     # generate word cloud
     wc.generate_from_frequencies(text)
 
     # show
-    plt.imshow(wc, interpolation="bilinear")
-    plt.axis("off")
-    plt.show()
+    if image_show is not None:
+        plt.imshow(wc, interpolation="bilinear")
+        plt.axis("off")
+        plt.show()
 
+    # Save image
     if image_save is not None:
-        # Save image
-        pass
+        wc.to_file(image_save)
 
 
 def main():
@@ -75,9 +83,10 @@ def main():
     print(full_terms_dict)
 
     # mask = get_mask_from_image(image_mask_path)
-    mask = get_circle_mask()
+    # mask = get_circle_mask()
 
-    make_image(full_terms_dict, "white", 200, mask, None)
+    for i in range(10):
+        make_image(2000, 2000, full_terms_dict, "black", 200, None, None, "saved/test"+str(i)+".png")
 
 
 if __name__ == '__main__':
