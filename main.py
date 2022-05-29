@@ -42,19 +42,21 @@ def get_mask_from_image(image_mask_path):
     return np.array(Image.open(image_mask_path))
 
 
-def get_circle_mask():
-    x, y = np.ogrid[:600, :600]
+def get_circle_mask(radius):
+    x, y = np.ogrid[:(2*radius), :(2*radius)]
 
-    mask = (x - 300) ** 2 + (y - 300) ** 2 > 260 ** 2
+    mask = (x - radius) ** 2 + (y - radius) ** 2 > (radius*0.98) ** 2
     mask = 255 * mask.astype(int)
     return mask
 
 
-def make_image(width, height, text, bg_color, max_words, mask, image_show, image_save):
+def make_image(width, height, text, colormap, bg_color, max_words, mask, image_show, image_save):
     wc = WordCloud(width=width,
                    height=height,
                    max_words=max_words,
-                   colormap='tab20c',
+                   colormap=colormap,
+                   # colormap='tab10',
+                   # colormap='Dark2',
                    background_color=bg_color,
                    max_font_size=300,
                    mask=mask,
@@ -84,11 +86,15 @@ def main():
     print(full_terms_dict)
 
     # mask = get_mask_from_image(image_mask_path)
-    # mask = get_circle_mask()
+    mask = get_circle_mask(1000)
 
-    # for i in range(10):
-    #     make_image(2000, 2000, full_terms_dict, "black", 200, None, None, "saved/"+str(i)+".png")
-    make_image(2000, 2000, full_terms_dict, "black", 200, None, True, None)
+    for i in range(10):
+        print("i:", i)
+        make_image(2000, 2000, full_terms_dict, "Dark2", "white", 200, None, None, "saved/dark_"+str(i)+".png")
+        make_image(2000, 2000, full_terms_dict, "Dark2", "white", 200, mask, None, "saved/dark_circle_"+str(i)+".png")
+        make_image(2000, 2000, full_terms_dict, "tab10", "white", 200, None, None, "saved/tab10_"+str(i)+".png")
+        make_image(2000, 2000, full_terms_dict, "tab10", "white", 200, mask, None, "saved/tab10_circle_"+str(i)+".png")
+    # make_image(2000, 2000, full_terms_dict, "tab10", "white", 200, mask, True, None)
 
 
 if __name__ == '__main__':
